@@ -24,7 +24,7 @@ img_base_url =  u"https://tjg.gzhuibei.com/a/1/"
 error_info = {}
 
 # 具体下载某一套图集
-def get_pic_set(local_save_base_path, set_info_path, pics_num):
+def get_pic_set(local_save_base_path, set_info_path, pics_num, pic_name = None):
     local_save_path = local_save_base_path + set_info_path + "_"
     if not os.path.exists(local_save_path):
         os.mkdir(local_save_path)
@@ -40,16 +40,22 @@ def get_pic_set(local_save_base_path, set_info_path, pics_num):
             return
         else:
             time.sleep(0.01)
+    if pic_name != None:
+        os.rename(local_save_path,local_save_path+pic_name)
+
 
 # 下载任务
 def download_task(local_save_base_path, map_pics_download, num_list = None):
     for key,values in map_pics_download.items():
+        pic_set     = str(key)
+        pic_count   = int(values[0])
+        pic_name    = values[1]
         if num_list != None:                # 设置过滤项
-            if str(key) in num_list:
+            if pic_set in num_list:
                 continue
-        print("downloading foldor:%d, num:%d..."%(key, values))    
-        get_pic_set(local_save_base_path, str(key),values)        # 下载图集
-        print("\n===== end of picSet:%s ====="%str(key))
+        print("downloading foldor:%s, num:%d pic_name:%s..."%(pic_set, pic_count,pic_name))    
+        get_pic_set(local_save_base_path, pic_set, pic_count, pic_name)        # 下载图集
+        print("\n===== end of picSet:%s-%d ====="%(pic_set,pic_count))
 
 
 def show_error_info():
