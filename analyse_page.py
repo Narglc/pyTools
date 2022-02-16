@@ -16,7 +16,6 @@ def get_html_content():
 '''
 
 
-
 def get_pics_info_from_page_content(page_content):
     map_pic_info = {}
     pic_list = re.findall("<li id=.*?</li>",page_content,re.S)

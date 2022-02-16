@@ -8,14 +8,29 @@ stime = datetime.now().strfttime("%H:%M:%S")
 print("time:%s", stime)
 """
 
+# 保存
+def save_filter_list_to_file(filter_list, file_name):
+    with open(file_name,"a+") as f:
+        for it in filter_list:
+            f.write(it+"\n")
+
+def get_filter_list_from_file(file_name):
+    filter_list = set()
+    with open(file_name,"r") as f:
+        line = f.readline()
+        while line:
+            filter_list.add(line[0:-1])
+            line = f.readline()
+    return filter_list
+
 # 获取当前路径下已存在的套图列表
-def get_filter_pic_set_list():
-    num_list = set()
-    all_dirs = os.listdir("./pics/")
+def get_filter_pic_set_list(pics_path):
+    filter_list = set()
+    all_dirs = os.listdir(pics_path)
     for cur_dir in all_dirs:
         tmp = cur_dir.split("_")
-        num_list.add(tmp[0])
-    return num_list
+        filter_list.add(tmp[0])
+    return filter_list
 
 # 图集岛网址
 img_base_url =  u"https://tjg.gzhuibei.com/a/1/"
@@ -39,7 +54,8 @@ def get_pic_set(local_save_base_path, set_info_path, pics_num, pic_name = None):
             error_info[set_info_path] = i
             return
         else:
-            time.sleep(0.01)
+            pass
+            #time.sleep(0.01)
     if pic_name != None:
         os.rename(local_save_path,local_save_path+pic_name)
 
