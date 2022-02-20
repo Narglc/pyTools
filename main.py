@@ -1,5 +1,7 @@
 #coding:utf-8
 
+import threading
+import queue
 import getPics
 import saved_data
 import analyse_page
@@ -65,11 +67,47 @@ def half_auto_collect_pic_info_filter_by_redis(key_prefix):
             pic_count   = int(value[0])
             pic_name    = value[1]
             getPics.get_pic_set(pics_path, pic_set, pic_count, pic_name)
-            break
+
+# 增加多线程实现
+def download_single_pic_set(q):
+    try:
+        while True:
+            key,value = q.get_nowait()
+            print("pop queue: ", key, value)
+            getPics.get_pic_set(pics_path, key, int(value[0]), value[1])
+    except queue.Empty as e:
+        pass
+
+
+def half_auto_collect_pic_info_filter_by_redis_and_thread(key_prefix):
+    pics_info.save_pics_info_to_redis(pics_path, key_prefix)
+    map_pic_info = analyse_page.get_pics_info_from_page_content(analyse_page.get_html_content())
+
+    q = queue.Queue()
+    redis_helper = RedisHelper(1)
+    i = 1
+    for key,value in map_pic_info.items():
+        if not redis_helper.exists(key_prefix+str(key)):
+            if i > 60:
+                break
+            q.put([key,value])
+            i = i + 1
+    
+    threads = []
+    for i in range(10):
+        r = threading.Thread(target=download_single_pic_set, args=(q,))
+        r.start()
+        threads.append(r)
+    for t in threads:
+        t.join()
 
 
 if __name__ == '__main__':
     #bak_filter_list()
     #half_auto_collect_pic_info()
+    
+    #need_man_collect_pic_info_with_redis("h_pics_tjd_")
+
     #half_auto_collect_pic_info_filter_by_redis("h_pics_tjd_")
-    need_man_collect_pic_info_with_redis("h_pics_tjd_")
+
+    half_auto_collect_pic_info_filter_by_redis_and_thread("h_pics_tjd_")
