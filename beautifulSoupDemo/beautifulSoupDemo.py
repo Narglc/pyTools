@@ -4,6 +4,7 @@ import re
 import requests
 from bs4 import BeautifulSoup
 
+"""
 url = "https://www.jpg12345.net/tao/3/43357.html"
 
 str_html = requests.get(url)
@@ -23,7 +24,7 @@ soup = BeautifulSoup(str_html.text,'lxml')
 # selet定位器 定位数据
 data = soup.select("body > div.content > img")
 
-print(data)
+#print(data)
 print("type data",type(data))
 list = []
 for item in data:
@@ -36,6 +37,9 @@ for item in data:
 
 for item in list:
     print(item)
+"""
+
+
 
 '''
 # 2. 通过本地html 文件来创建对象
@@ -70,3 +74,28 @@ for tag in soup2.find_all(re.compile("b")):
     print(tag.name)
 '''
 
+# 3. 使用bs解析tjd
+lsp = BeautifulSoup( open('../page.html', encoding='utf-8'),'lxml')
+data = lsp.select("body > div > ul")
+pic_info = []
+for item in data:
+    if item.span == None:
+        continue
+    all_li = item.select("li")
+    for each_li in all_li:
+        result = {
+            "picSetNo":each_li.get("id"),
+            "shuliang":each_li.span.get_text()[:-1],
+            "name":each_li.select('li > p > a')[-1].get_text()
+        }
+        print(result)
+        pic_info.append(result)
+
+
+# 4. 保存到 Redis
+import redis
+r = redis.Redis(host='localhost',port=6379,db=0)
+for item in pic_info:
+    str_key = "hpics_tjd_%s"%(item["picSetNo"])
+    r.hset(str_key, "name", item["name"])
+    r.hset(str_key, "count",item["shuliang"])

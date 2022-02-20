@@ -23,7 +23,6 @@ def get_pics_info_from_page_content(page_content):
         pic_set   = re.findall('<li id="(.*?)">',pic_html,re.S)[0]
         pic_count = re.findall('<span class="shuliang">(.*?)P</span>',pic_html, re.S)[0]
         pic_name  = re.findall(r'><a href=.*?>(.*?)</a></p>', pic_html, re.S)[0].strip()
-        [pic_count, pic_name]
         map_pic_info[pic_set] = [pic_count, pic_name]
     return map_pic_info
 
