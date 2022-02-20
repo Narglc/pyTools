@@ -1,3 +1,16 @@
+map_pics_download2 = {
+    46328:["71","[DJAWA] Maruemon - Knotting Class #3"],
+    46874:["34","[DJAWA] Jenny - Lovely Pink"],
+    46868:["79","[DJAWA] BamBi - Azur Lane HMS Formidable"],
+    46866:["93","[DJAWA] Aram - Poolside Summer"],
+    46872:["29","[DJAWA] Jenny - Brooklyn Girl"],
+    46877:["83","[DJAWA] Jenny - Sweet Talk"],
+    47457:["45","[DJAWA] Heihwa - Hei-Miko!"],
+    45841:["60","[DJAWA] BamBi - Riamu Overdosed 写真套图"],
+    45842:["35","[DJAWA] BamBi - Sonico w Micro-top 写真套图"],
+    46303:["80","[DJAWA] Aram - Hot Pink Jersey!"],
+}
+
 
 map_pics_download = {
     46559:55,

@@ -29,6 +29,18 @@ def need_man_collect_pic_info():
     getPics.download_task(pics_path, saved_data.map_pics_download, filter_list)
     getPics.show_error_info()
 
+def need_man_collect_pic_info_with_redis(key_prefix):
+    print("共获取到%d个数据"%len(saved_data.map_pics_download2))
+    redis_helper = RedisHelper(1)
+    for key,value in saved_data.map_pics_download2.items():
+        if not redis_helper.exists(key_prefix+str(key)):
+            print("Not exist info [", str(key), value[1])
+            pic_set     = str(key)
+            pic_count   = int(value[0])
+            pic_name    = value[1]
+            getPics.get_pic_set(pics_path, pic_set, pic_count, pic_name)
+    getPics.show_error_info()   
+
 # 半自动收集,需要收集目录页html
 def half_auto_collect_pic_info():
     map_pic_info = analyse_page.get_pics_info_from_page_content(analyse_page.get_html_content())
@@ -59,4 +71,5 @@ def half_auto_collect_pic_info_filter_by_redis(key_prefix):
 if __name__ == '__main__':
     #bak_filter_list()
     #half_auto_collect_pic_info()
-    half_auto_collect_pic_info_filter_by_redis("h_pics_tjd_")
+    #half_auto_collect_pic_info_filter_by_redis("h_pics_tjd_")
+    need_man_collect_pic_info_with_redis("h_pics_tjd_")
